@@ -1,7 +1,16 @@
 package com.ll.springjwt20250130.global.standard.util;
 
+import java.security.Key;
+import java.util.Date;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.SneakyThrows;
 
 public class Ut {
@@ -21,6 +30,32 @@ public class Ut {
         @SneakyThrows
         public static String tostring(Object obj) {
             return om.writeValueAsString(obj);
+        }
+    }
+
+    public static class jwt {
+        public static String toString(String secret, int expireSeconds, Map<String, Object> body) {
+            // claim = 토큰의 내용
+            ClaimsBuilder claimsBuilder = Jwts.claims();
+
+            for (Map.Entry<String, Object> entry : body.entrySet()) {
+                claimsBuilder.add(entry.getKey(), entry.getValue());
+            }
+
+            Claims claims = claimsBuilder.build();
+            Date issuedAt = new Date();
+            Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
+
+            Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+            String jwt = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(issuedAt)
+                .setExpiration(expiration)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+
+            return jwt;
         }
     }
 }
