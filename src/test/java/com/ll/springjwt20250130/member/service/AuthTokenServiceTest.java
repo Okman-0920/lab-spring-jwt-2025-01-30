@@ -13,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.AuthTokenService;
+import com.ll.springjwt20250130.domain.member.member.service.MemberService;
 import com.ll.springjwt20250130.global.standard.util.Ut;
 
 import io.jsonwebtoken.Claims;
@@ -25,6 +27,9 @@ import io.jsonwebtoken.security.Keys;
 @ActiveProfiles("test")
 @Transactional
 public class AuthTokenServiceTest {
+	@Autowired
+	private MemberService memberService;
+
 	@Autowired
 	private AuthTokenService authTokenService;
 
@@ -74,5 +79,17 @@ public class AuthTokenServiceTest {
 		assertThat(jwt).isNotBlank();
 
 		System.out.println("jwt = " + jwt);
+	}
+
+	@Test
+	@DisplayName("authTokenService.getAccessToken(member);")
+	void t4() {
+		Member memberUser1 = memberService.findByUsername("user1").get();
+
+		String accessToken = authTokenService.genAccessToken(memberUser1);
+
+		assertThat(accessToken).isNotBlank();
+
+		System.out.println("accessToken = " + accessToken);
 	}
 }
