@@ -1,4 +1,4 @@
-package com.ll.springjwt20250130.controller;
+package com.ll.springjwt20250130.member.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
