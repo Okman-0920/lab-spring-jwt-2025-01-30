@@ -4,6 +4,8 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
@@ -45,6 +47,22 @@ public class Ut {
                 .compact();
 
             return jwt;
+        }
+
+        public static boolean IsValid(String secret, String jwtStr) {
+            SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+            try {
+                Jwts
+                    .parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parse(jwtStr)
+                    .getPayload();
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -84,7 +84,7 @@ public class AuthTokenServiceTest {
 
 		assertThat(jwt).isNotBlank();
 
-		System.out.println("jwt = " + jwt);
+		assertThat(Ut.jwt.IsValid(secret, jwt)).isTrue();
 	}
 
 	@Test
