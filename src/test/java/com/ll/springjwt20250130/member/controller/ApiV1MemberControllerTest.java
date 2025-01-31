@@ -153,15 +153,16 @@ class ApiV1MemberControllerTest {
         Member member = memberService.findByUsername("user1").get();
 
         resultActions 
-                .andExpect(handler().handlerType(ApiV1MemberController.class))
-                .andExpect(handler().methodName("login"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").value("200-1"))
-                .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted(member.getName())))
-                .andExpect(jsonPath("$.data").exists())
-                .andExpect(jsonPath("$.data.item").exists())
-                .andExpect(jsonPath("$.data.item.id").value(member.getId()))
-                .andExpect(jsonPath("$.data.apiKey").value(member.getApiKey()));
+            .andExpect(handler().handlerType(ApiV1MemberController.class))
+            .andExpect(handler().methodName("login"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.resultCode").value("200-1"))
+            .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted(member.getName())))
+            .andExpect(jsonPath("$.data").exists())
+            .andExpect(jsonPath("$.data.item").exists())
+            .andExpect(jsonPath("$.data.item.id").value(member.getId()))
+            .andExpect(jsonPath("$.data.apiKey").value(member.getApiKey()))
+            .andExpect(jsonPath("$.data.accessToken").exists());
     }
 
     @Test
