@@ -47,7 +47,7 @@ class ApiV1MemberControllerTest {
                                         "username": "usernew",
                                         "password": "1234",
                                         "nickname": "무명"
-                                    }                                   
+                                    }
                                     """.stripIndent()) // 문자열의 들여쓰기를 제거함
                                 // HTTP 요청 본문의 데이터 타입을 설정
                                 .contentType(
@@ -60,17 +60,16 @@ class ApiV1MemberControllerTest {
         Member member = memberService.findByUsername("usernew").get();
 
         resultActions // 테스트의 결과는 다음과 같기를 기대한다.
-                .andExpect(handler().handlerType(ApiV1MemberController.class))
-                .andExpect(handler().methodName("join"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.resultCode").value("201-1"))
-                .andExpect(jsonPath("$.msg").value("%s님 환영합니다. 회원가입이 완료되었습니다.".formatted(member.getName())))
-                .andExpect(jsonPath("$.data").exists()) // 데이터가 json 응답에 존재하는지
-                .andExpect(jsonPath("$.data.id").value(member.getId()))
-                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 25))))
-                // Matchers: 일치하는지 확인해라 / startsWith 처음부터 25자까지
-                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 25))))
-                .andExpect(jsonPath("$.data.nickname").value(member.getNickname()));
+            .andExpect(handler().handlerType(ApiV1MemberController.class))
+            .andExpect(handler().methodName("join"))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.resultCode").value("201-1"))
+            .andExpect(jsonPath("$.msg").value("%s님 환영합니다. 회원가입이 완료되었습니다.".formatted(member.getNickname())))
+            .andExpect(jsonPath("$.data").exists())
+            .andExpect(jsonPath("$.data.id").value(member.getId()))
+            .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 25))))
+            .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 25))))
+            .andExpect(jsonPath("$.data.nickname").value(member.getNickname()));
     }
 
     @Test
@@ -274,10 +273,12 @@ class ApiV1MemberControllerTest {
     void t9() throws Exception {
         Member member = memberService.findByUsername("user1").get();
 
+        String memberAccessToken = memberService.genAccessToken(member);
+
         ResultActions resultActions = mvc
                 .perform(
                         get("/api/v1/members/me")
-                                .header("Authorization", "Bearer " + member.getApiKey())
+                                .header("Authorization", "Bearer " + memberAccessToken)
                 )
                 .andDo(print());
 
@@ -291,30 +292,32 @@ class ApiV1MemberControllerTest {
     @Test
     @DisplayName("내 정보, with user2")
     void t10() throws Exception {
-        Member member = memberService.findByUsername("user2").get();
+        Member actor = memberService.findByUsername("user2").get();
+        String actorAccessToken = memberService.genAccessToken(actor);
+
         ResultActions resultActions = mvc
                 .perform(
                         get("/api/v1/members/me")
-                                .header("Authorization", "Bearer " + member.getApiKey())
+                                .header("Authorization", "Bearer " + actorAccessToken)
                 )
                 .andDo(print());
         resultActions
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
                 .andExpect(handler().methodName("me"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(member.getId()))
-                .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 25))))
-                .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 25))))
-                .andExpect(jsonPath("$.nickname").value(member.getNickname()));
+                .andExpect(jsonPath("$.id").value(actor.getId()))
+                .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(actor.getCreateDate().toString().substring(0, 25))))
+                .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(actor.getModifyDate().toString().substring(0, 25))))
+                .andExpect(jsonPath("$.nickname").value(actor.getNickname()));
     }
 
     @Test
-    @DisplayName("내 정보 조회 with 잘못된 API KEY")
+    @DisplayName("내 정보, with wrong access key")
     void t11() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
                         get("/api/v1/members/me")
-                                .header("Authorization", "Bearer wrong-api-key")
+                                .header("Authorization", "Bearer wrong-access-key")
                 )
                 .andDo(print());
 

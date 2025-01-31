@@ -1,5 +1,7 @@
 package com.ll.springjwt20250130.global.jpa.entity;
 
+import static jakarta.persistence.GenerationType.*;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -7,8 +9,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
 @MappedSuperclass // 암기: 엔티티가 상속하는 클래스는 해당 어노테이션을 붙인다
@@ -19,6 +19,6 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PROTECTED)
     private Long id;;
 }

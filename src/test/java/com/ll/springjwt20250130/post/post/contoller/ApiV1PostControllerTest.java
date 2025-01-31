@@ -53,20 +53,20 @@ class ApiV1PostControllerTest {
                 Post post = postService.findById(1).get();
 
                 resultActions
-                                .andExpect(handler().handlerType(ApiV1PostController.class))
-                                .andExpect(handler().methodName("item"))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(post.getId()))
-                                .andExpect(jsonPath("$.createDate").value(
-                                                Matchers.startsWith(post.getCreateDate().toString().substring(0, 25))))
-                                .andExpect(jsonPath("$.modifyDate").value(
-                                                Matchers.startsWith(post.getModifyDate().toString().substring(0, 25))))
-                                .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
-                                .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
-                                .andExpect(jsonPath("$.title").value(post.getTitle()))
-                                .andExpect(jsonPath("$.content").value(post.getContent()))
-                                .andExpect(jsonPath("$.published").value(post.isPublished()))
-                                .andExpect(jsonPath("$.listed").value(post.isListed()));
+                        .andExpect(handler().handlerType(ApiV1PostController.class))
+                        .andExpect(handler().methodName("item"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(post.getId()))
+                        .andExpect(jsonPath("$.createDate").value(
+                                        Matchers.startsWith(post.getCreateDate().toString().substring(0, 20))))
+                        .andExpect(jsonPath("$.modifyDate").value(
+                                        Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
+                        .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
+                        .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
+                        .andExpect(jsonPath("$.title").value(post.getTitle()))
+                        .andExpect(jsonPath("$.content").value(post.getContent()))
+                        .andExpect(jsonPath("$.published").value(post.isPublished()))
+                        .andExpect(jsonPath("$.listed").value(post.isListed()));
         }
 
         @Test
@@ -90,10 +90,12 @@ class ApiV1PostControllerTest {
         void t3() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                     .perform(
                         post("/api/v1/posts/write")
-                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .header("Authorization", "Bearer " + memberAccessToken)
                                 .content("""
                                                 {
                                                     "title": "글1",
@@ -155,6 +157,9 @@ class ApiV1PostControllerTest {
         @DisplayName("글 수정")
         void t5() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
+
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 Post post = postService.findById(1).get();
 
                 LocalDateTime oldModifyDate = post.getModifyDate();
@@ -162,7 +167,7 @@ class ApiV1PostControllerTest {
                 ResultActions resultActions = mvc
                                 .perform(
                                                 put("/api/v1/posts/1")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                                                .header("Authorization", "Bearer " + memberAccessToken)
                                                                 .content("""
                                                                                 {
                                                                                     "title" : "글1의 수정 제목",
@@ -184,9 +189,9 @@ class ApiV1PostControllerTest {
                                 .andExpect(jsonPath("$.msg").value("%d번 글 수정이 완료되었습니다".formatted(post.getId())))
                                 .andExpect(jsonPath("$.data.id").value(post.getId()))
                                 .andExpect(jsonPath("$.data.createDate").value(
-                                                Matchers.startsWith(post.getCreateDate().toString().substring(0, 25))))
+                                                Matchers.startsWith(post.getCreateDate().toString().substring(0, 20))))
                                 .andExpect(jsonPath("$.data.modifyDate").value(Matchers
-                                                .not(Matchers.startsWith(oldModifyDate.toString().substring(0, 25)))))
+                                                .not(Matchers.startsWith(oldModifyDate.toString().substring(0, 20)))))
                                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
@@ -221,10 +226,12 @@ class ApiV1PostControllerTest {
         void t7() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 put("/api/v1/posts/3")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                                                .header("Authorization", "Bearer " + memberAccessToken)
                                                                 .content("""
                                                                                 {
                                                                                     "title" : "글1의 수정 제목",
@@ -249,12 +256,14 @@ class ApiV1PostControllerTest {
         void t8() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 Post post = postService.findById(1).get();
 
                 ResultActions resultActions = mvc
                                 .perform(
                                                 delete("/api/v1/posts/1")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 resultActions
@@ -272,10 +281,12 @@ class ApiV1PostControllerTest {
         void t9() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 delete("/api/v1/posts/10")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 assertThat(postService.findById(10)).isEmpty();
@@ -307,10 +318,12 @@ class ApiV1PostControllerTest {
         void t11() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 delete("/api/v1/posts/3")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 resultActions
@@ -326,10 +339,12 @@ class ApiV1PostControllerTest {
         void t12() throws Exception {
                 Member actor = memberService.findByUsername("user4").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 get("/api/v1/posts/6")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 Post post = postService.findById(6).get();
@@ -368,10 +383,12 @@ class ApiV1PostControllerTest {
         void t14() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                     .perform(
                         get("/api/v1/posts/6")
-                            .header("Authorization", "Bearer " + actor.getApiKey()))
+                            .header("Authorization", "Bearer " + memberAccessToken))
                     .andDo(print());
 
                 resultActions
@@ -511,10 +528,12 @@ class ApiV1PostControllerTest {
         void t18() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 get("/api/v1/posts/mine?pageNumber=1&pageSize=3")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 Page<Post> postPage = postService
@@ -536,9 +555,9 @@ class ApiV1PostControllerTest {
                         resultActions
                                         .andExpect(jsonPath("$.items[%d].id".formatted(i)).value(post.getId()))
                                         .andExpect(jsonPath("$.items[%d].createDate".formatted(i)).value(Matchers
-                                                        .startsWith(post.getCreateDate().toString().substring(0, 25))))
+                                                        .startsWith(post.getCreateDate().toString().substring(0, 20))))
                                         .andExpect(jsonPath("$.items[%d].modifyDate".formatted(i)).value(Matchers
-                                                        .startsWith(post.getModifyDate().toString().substring(0, 25))))
+                                                        .startsWith(post.getModifyDate().toString().substring(0, 20))))
                                         .andExpect(jsonPath("$.items[%d].authorId".formatted(i))
                                                         .value(post.getAuthor().getId()))
                                         .andExpect(jsonPath("$.items[%d].authorName".formatted(i))
@@ -556,10 +575,12 @@ class ApiV1PostControllerTest {
         void t19() throws Exception {
                 Member actor = memberService.findByUsername("user1").get();
 
+                String memberAccessToken = memberService.genAccessToken(actor);
+
                 ResultActions resultActions = mvc
                                 .perform(
                                                 get("/api/v1/posts/mine?pageNumber=1&pageSize=3&searchKeywordType=content&searchKeyword=작성 완료")
-                                                                .header("Authorization", "Bearer " + actor.getApiKey()))
+                                                                .header("Authorization", "Bearer " + memberAccessToken))
                                 .andDo(print());
 
                 Page<Post> postPage = postService

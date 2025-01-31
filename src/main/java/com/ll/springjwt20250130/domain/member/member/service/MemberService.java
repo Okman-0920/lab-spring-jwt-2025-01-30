@@ -58,4 +58,16 @@ public class MemberService {
     public Map<String, Object> payload(String accessToken) {
         return authTokenService.payload(accessToken);
     }
+
+    public Member getMemberFromAccessToken(String accessToken) {
+        Map<String, Object> payload = authTokenService.payload(accessToken);
+        if (payload == null) return null;
+
+        long id = (long) payload.get("id");
+        String username = (String) payload.get("username");
+
+        Member member = new Member(id, username);
+
+        return member;
+    }
 }

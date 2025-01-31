@@ -29,7 +29,7 @@ public class Member extends BaseTime {
     @Column(unique = true, length = 50)
     private String apiKey;
 
-    public String getName() {
+	public String getName() {
         return nickname;
     }
 
@@ -40,4 +40,10 @@ public class Member extends BaseTime {
     public boolean matchPassword(String password) {
         return this.password.equals(password);
     }
+
+	public Member(long id, String username) {
+		super();
+		this.setId(id);
+		this.setUsername(username);
+	}
 }

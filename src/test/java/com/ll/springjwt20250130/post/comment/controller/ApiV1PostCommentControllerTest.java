@@ -73,6 +73,8 @@ public class ApiV1PostCommentControllerTest {
     void t2() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
 
+        String memberAccessToken = memberService.genAccessToken(actor);
+
         Post post = postService.findById(1).get();
 
         PostComment postComment = post.getCommentById(1).get();
@@ -80,7 +82,7 @@ public class ApiV1PostCommentControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         delete("/api/v1/posts/1/comments/1")
-                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .header("Authorization", "Bearer " + memberAccessToken)
                 )
                 .andDo(print());
 
@@ -98,6 +100,7 @@ public class ApiV1PostCommentControllerTest {
     @DisplayName("댓글 수정")
     void t3() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
+        String memberAccessToken = memberService.genAccessToken(actor);
 
         Post post = postService.findById(1).get();
 
@@ -106,7 +109,7 @@ public class ApiV1PostCommentControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         put("/api/v1/posts/1/comments/1")
-                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .header("Authorization", "Bearer " + memberAccessToken)
                                 .content("""
                                         {
                                             "content": "modify 댓글"
@@ -137,10 +140,12 @@ public class ApiV1PostCommentControllerTest {
     void t4() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
 
+        String memberAccessToken = memberService.genAccessToken(actor);
+
         ResultActions resultActions = mvc
                 .perform(
                         post("/api/v1/posts/1/comments")
-                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .header("Authorization", "Bearer " + memberAccessToken)
                                 .content("""
                                         {
                                             "content": "new write 댓글"
