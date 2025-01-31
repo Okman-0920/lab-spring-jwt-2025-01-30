@@ -278,7 +278,7 @@ class ApiV1MemberControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         get("/api/v1/members/me")
-                                .header("Authorization", "Bearer " + memberAccessToken)
+                                .header("Authorization", "Bearer " + actorAuthToken)
                 )
                 .andDo(print());
 
@@ -298,7 +298,7 @@ class ApiV1MemberControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         get("/api/v1/members/me")
-                                .header("Authorization", "Bearer " + actorAccessToken)
+                                .header("Authorization", "Bearer " + actorAuthToken)
                 )
                 .andDo(print());
         resultActions

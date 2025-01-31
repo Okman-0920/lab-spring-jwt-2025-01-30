@@ -73,7 +73,7 @@ public class ApiV1PostCommentControllerTest {
     void t2() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
 
-        String memberAccessToken = memberService.genAccessToken(actor);
+        String actorAuthToken = memberService.getAuthToken(actor);
 
         Post post = postService.findById(1).get();
 
@@ -82,7 +82,7 @@ public class ApiV1PostCommentControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         delete("/api/v1/posts/1/comments/1")
-                                .header("Authorization", "Bearer " + memberAccessToken)
+                                .header("Authorization", "Bearer " + actorAuthToken)
                 )
                 .andDo(print());
 
@@ -100,7 +100,7 @@ public class ApiV1PostCommentControllerTest {
     @DisplayName("댓글 수정")
     void t3() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
-        String memberAccessToken = memberService.genAccessToken(actor);
+        String actorAuthToken = memberService.getAuthToken(actor);
 
         Post post = postService.findById(1).get();
 
@@ -109,7 +109,7 @@ public class ApiV1PostCommentControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         put("/api/v1/posts/1/comments/1")
-                                .header("Authorization", "Bearer " + memberAccessToken)
+                                .header("Authorization", "Bearer " + actorAuthToken)
                                 .content("""
                                         {
                                             "content": "modify 댓글"
@@ -140,12 +140,12 @@ public class ApiV1PostCommentControllerTest {
     void t4() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
 
-        String memberAccessToken = memberService.genAccessToken(actor);
+        String actorAuthToken = memberService.getAuthToken(actor);
 
         ResultActions resultActions = mvc
                 .perform(
                         post("/api/v1/posts/1/comments")
-                                .header("Authorization", "Bearer " + memberAccessToken)
+                                .header("Authorization", "Bearer " + actorAuthToken)
                                 .content("""
                                         {
                                             "content": "new write 댓글"
