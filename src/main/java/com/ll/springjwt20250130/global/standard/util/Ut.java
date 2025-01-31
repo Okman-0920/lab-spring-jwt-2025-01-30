@@ -27,13 +27,13 @@ public class Ut {
         private static final ObjectMapper om = new ObjectMapper();
 
         @SneakyThrows
-        public static String tostring(Object obj) {
+        public static String toString(Object obj) {
             return om.writeValueAsString(obj);
         }
     }
 
     public static class jwt {
-        public static String toString(String secret, int expireSeconds, Map<String, Object> body) {
+        public static String toString(String secret, long expireSeconds, Map<String, Object> body) {
             Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
             Date issuedAt = new Date();
@@ -49,7 +49,7 @@ public class Ut {
             return jwt;
         }
 
-        public static boolean IsValid(String secret, String jwtStr) {
+        public static boolean isValid(String secret, String jwtStr) {
             SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
             try {
