@@ -18,9 +18,7 @@ import com.ll.springjwt20250130.domain.member.member.service.AuthTokenService;
 import com.ll.springjwt20250130.domain.member.member.service.MemberService;
 import com.ll.springjwt20250130.global.standard.util.Ut;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @SpringBootTest
@@ -47,12 +45,6 @@ public class AuthTokenServiceTest {
 	@Test
 	@DisplayName("jjwt 로 JWT 생성, {name=\"Paul\", age=23}")
 	void t2() {
-		// 클레임 (토큰에 담을 데이터)
-		Claims claims = Jwts.claims()
-			.add("name", "Paul")
-			.add("age", 23)
-			.build();
-
 		Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
 		// 토큰을 언제 만들었는지
@@ -60,10 +52,15 @@ public class AuthTokenServiceTest {
 		Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
 
 		String jwt = Jwts.builder()
-			.setClaims(claims)
-			.setIssuedAt(issuedAt)
-			.setExpiration(expiration)
-			.signWith(secretKey, SignatureAlgorithm.HS256)
+			.claims(
+				Map.of(
+					"neme", "Paul",
+					"age", 23
+				)
+			)
+			.issuedAt(issuedAt)
+			.expiration(expiration)
+			.signWith(secretKey)
 			.compact();
 
 		assertThat(jwt).isNotBlank();
