@@ -32,10 +32,10 @@ public class Ut {
 
     public static class jwt {
         public static String toString(String secret, int expireSeconds, Map<String, Object> body) {
+            Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
             Date issuedAt = new Date();
             Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
-
-            Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
             String jwt = Jwts.builder()
                 .claims(body)

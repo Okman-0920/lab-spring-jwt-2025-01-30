@@ -1,10 +1,11 @@
 package com.ll.springjwt20250130.member.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+
+import javax.crypto.SecretKey;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,33 +46,41 @@ public class AuthTokenServiceTest {
 	@Test
 	@DisplayName("jjwt 로 JWT 생성, {name=\"Paul\", age=23}")
 	void t2() {
-		Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+		SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+		Map<String, Object> payload = Map.of(
+				"name", "Paul",
+				"age", 23);
 
 		// 토큰을 언제 만들었는지
 		Date issuedAt = new Date();
 		Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
 
-		String jwt = Jwts.builder()
-			.claims(
-				Map.of(
-					"neme", "Paul",
-					"age", 23
-				)
-			)
-			.issuedAt(issuedAt)
-			.expiration(expiration)
-			.signWith(secretKey)
-			.compact();
+		String jwtStr = Jwts.builder()
+				.claims(payload)
+				.issuedAt(issuedAt)
+				.expiration(expiration)
+				.signWith(secretKey)
+				.compact();
 
-		assertThat(jwt).isNotBlank();
+		assertThat(jwtStr).isNotBlank();
 
-		System.out.println("jwt = " + jwt);
+		// 키가 유효한지 테스트
+		Map<String, Object> parsedPayload = (Map<String, Object>) Jwts
+				.parser()
+				.verifyWith(secretKey)
+				.build()
+				.parse(jwtStr)
+				.getPayload();
+
+		// 키로 부터 payload 를 파싱한 결과가 원래 payload 와 같은지 테스트
+		assertThat(parsedPayload).containsAllEntriesOf(payload);
 	}
 
 	@Test
 	@DisplayName("Ut.jwt.toString 를 통해서 JWT 생성, {name=\"Paul\", age=23}")
 	void t3() {
-		String jwt = Ut.jwt.toString(secret, expireSeconds, Map.of("name","Paul","age",23));
+		String jwt = Ut.jwt.toString(secret, expireSeconds, Map.of("name", "Paul", "age", 23));
 
 		assertThat(jwt).isNotBlank();
 
