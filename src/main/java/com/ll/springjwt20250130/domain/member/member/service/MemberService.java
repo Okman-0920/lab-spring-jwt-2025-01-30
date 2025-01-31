@@ -1,5 +1,6 @@
 package com.ll.springjwt20250130.domain.member.member.service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AuthTokenService authTokenService;
 
     public long count() {
         return memberRepository.count();
@@ -47,5 +49,13 @@ public class MemberService {
 
     public Optional<Member> findByApiKey(String apiKey) {
         return memberRepository.findByApiKey(apiKey);
+    }
+
+	public String genAccessToken(Member member) {
+        return authTokenService.genAccessToken(member);
+	}
+
+    public Map<String, Object> payload(String accessToken) {
+        return authTokenService.payload(accessToken);
     }
 }

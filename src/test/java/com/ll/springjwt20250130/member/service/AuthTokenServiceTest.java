@@ -103,13 +103,13 @@ public class AuthTokenServiceTest {
 	void t4() {
 		Member memberUser1 = memberService.findByUsername("user1").get();
 
-		String accessToken = authTokenService.genAccessToken(memberUser1);
+		String accessToken = memberService.genAccessToken(memberUser1);
 
 		assertThat(accessToken).isNotBlank();
 
 		assertThat(Ut.jwt.isValid(jwtSecretKey, accessToken)).isTrue();
 
-		Map<String, Object> parsedPayload = authTokenService.payload(accessToken);
+		Map<String, Object> parsedPayload = memberService.payload(accessToken);
 		assertThat(parsedPayload)
 			.containsAllEntriesOf(
 				Map.of(
