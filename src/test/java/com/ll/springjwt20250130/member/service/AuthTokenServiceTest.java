@@ -46,15 +46,15 @@ public class AuthTokenServiceTest {
 	@Test
 	@DisplayName("jjwt 로 JWT 생성, {name=\"Paul\", age=23}")
 	void t2() {
-		SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-
-		Map<String, Object> payload = Map.of(
-				"name", "Paul",
-				"age", 23);
-
 		// 토큰을 언제 만들었는지
 		Date issuedAt = new Date();
 		Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
+
+		SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+		Map<String, Object> payload = Map.of(
+			"name", "Paul",
+			"age", 23);
 
 		String jwtStr = Jwts.builder()
 				.claims(payload)
@@ -80,11 +80,15 @@ public class AuthTokenServiceTest {
 	@Test
 	@DisplayName("Ut.jwt.toString 를 통해서 JWT 생성, {name=\"Paul\", age=23}")
 	void t3() {
-		String jwt = Ut.jwt.toString(secret, expireSeconds, Map.of("name", "Paul", "age", 23));
+		Map<String, Object> payload = Map.of("name", "Paul", "age", 23);
 
-		assertThat(jwt).isNotBlank();
+		String jwtStr = Ut.jwt.toString(secret, expireSeconds, payload);
 
-		assertThat(Ut.jwt.IsValid(secret, jwt)).isTrue();
+		assertThat(jwtStr).isNotBlank();
+		assertThat(Ut.jwt.IsValid(secret, jwtStr)).isTrue();
+		Map<String, Object> parsedPayload = Ut.jwt.payload(secret, jwtStr);
+
+		assertThat(parsedPayload).containsAllEntriesOf(payload);
 	}
 
 	@Test

@@ -57,12 +57,28 @@ public class Ut {
                     .parser()
                     .verifyWith(secretKey)
                     .build()
-                    .parse(jwtStr)
-                    .getPayload();
+                    .parse(jwtStr);
+
             } catch (Exception e) {
                 return false;
             }
             return true;
+        }
+
+        public static Map<String, Object> payload(String secret, String jwtStr) {
+            SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+            try {
+                return (Map<String, Object>) Jwts
+                    .parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parse(jwtStr)
+                    .getPayload();
+
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 }
