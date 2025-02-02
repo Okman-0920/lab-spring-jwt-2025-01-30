@@ -2,7 +2,6 @@ package com.ll.springjwt20250130.global.security;
 
 import java.util.List;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+// 타임리프에서는 필수로 사용해야하는 클래스
 public class CustomUserDetailsService implements UserDetailsService {
 	private	final MemberRepository memberRepository;
 
@@ -23,7 +23,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Member member = memberRepository.findByUsername(username)
 			.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다"));
 
-		return new User(
+		return new SecurityUser(
+			member.getId(),
 			member.getUsername(),
 			member.getPassword(),
 			List.of()
