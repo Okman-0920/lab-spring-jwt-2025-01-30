@@ -47,7 +47,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		rq.setLogin(member.getUsername());
+		rq.setLogin(member);
 
 		filterChain.doFilter(request, response);
 	}

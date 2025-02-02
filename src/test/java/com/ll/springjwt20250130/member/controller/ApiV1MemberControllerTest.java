@@ -273,7 +273,7 @@ class ApiV1MemberControllerTest {
     void t9() throws Exception {
         Member member = memberService.findByUsername("user1").get();
 
-        String memberAccessToken = memberService.genAccessToken(member);
+        String actorAuthToken = memberService.genAccessToken(member);
 
         ResultActions resultActions = mvc
                 .perform(
@@ -293,7 +293,7 @@ class ApiV1MemberControllerTest {
     @DisplayName("내 정보, with user2")
     void t10() throws Exception {
         Member actor = memberService.findByUsername("user2").get();
-        String actorAccessToken = memberService.genAccessToken(actor);
+        String actorAuthToken = memberService.genAccessToken(actor);
 
         ResultActions resultActions = mvc
                 .perform(

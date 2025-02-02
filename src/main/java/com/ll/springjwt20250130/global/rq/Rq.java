@@ -1,18 +1,18 @@
 package com.ll.springjwt20250130.global.rq;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.MemberService;
+import com.ll.springjwt20250130.global.security.SecurityUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,9 +26,10 @@ public class Rq {
 
     // 스프링 시큐리티가 이해하는 방식으로 강제 로그인 처리
     // 임시 함수
-    public void setLogin(String username) {
-        UserDetails user = new User(
-            username,
+    public void setLogin(Member member) {
+        UserDetails user = new SecurityUser(
+            member.getId(),
+            member.getUsername(),
             "",
             List.of()
         );
@@ -42,19 +43,16 @@ public class Rq {
     }
 
     public Member getActor() {
-        SecurityContext context = SecurityContextHolder.getContext();
-
-        if (context == null) return null;
-
-        Authentication authentication = context.getAuthentication();
-
-        if (authentication == null) return null;
-
-        if (authentication.getPrincipal() == null || authentication.getPrincipal() instanceof String) return null;
-
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        String username = user.getUsername();
-        return memberService.findByUsername(username).get();
-
+        return Optional.ofNullable(
+                SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+            )
+            .map(Authentication::getPrincipal)
+            .filter(principal -> principal instanceof UserDetails)
+            .map(principal -> (UserDetails) principal)
+            .map(UserDetails::getUsername)
+            .flatMap(memberService::findByUsername)
+            .orElse(null);
     }
 }
