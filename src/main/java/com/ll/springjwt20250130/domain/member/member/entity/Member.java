@@ -1,5 +1,12 @@
 package com.ll.springjwt20250130.domain.member.member.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import com.ll.springjwt20250130.global.jpa.entity.BaseTime;
 
 import jakarta.persistence.Column;
@@ -45,5 +52,18 @@ public class Member extends BaseTime {
 		super();
 		this.setId(id);
 		this.setUsername(username);
+	}
+
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return getAuthoritiesAsStringList()
+			.stream()
+			.map(SimpleGrantedAuthority::new)
+			.toList();
+	}
+	public List<String> getAuthoritiesAsStringList() {
+		List<String> authorities = new ArrayList<>();
+		if (isAdmin())
+			authorities.add("ADMIN_ACTING"); // 관리자 행동을 할 권한
+		return authorities;
 	}
 }

@@ -1,6 +1,5 @@
 package com.ll.springjwt20250130.global.rq;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,7 @@ public class Rq {
             member.getId(),
             member.getUsername(),
             "",
-            List.of()
+            member.getAuthorities()
         );
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

@@ -1,7 +1,5 @@
 package com.ll.springjwt20250130.global.security;
 
-import java.util.List;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 			member.getId(),
 			member.getUsername(),
 			member.getPassword(),
-			List.of()
+			member.getAuthorities()
 		);
 
 	}
