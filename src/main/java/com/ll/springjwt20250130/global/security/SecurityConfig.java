@@ -29,7 +29,7 @@ public class SecurityConfig {
 					.requestMatchers("/api/*/members/login", "/api/*/members/join")
 					.permitAll()
 					.requestMatchers("/api/*/posts/statistics")
-					.hasAuthority("ADMIN_ACTING")
+					.hasAuthority("ROLE_ADMIN")
 					// Matcher 된 get 매서드는 승인한다
 					.anyRequest()
 					// 그 외에 나머지 요청은

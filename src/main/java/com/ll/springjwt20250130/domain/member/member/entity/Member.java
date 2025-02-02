@@ -63,7 +63,7 @@ public class Member extends BaseTime {
 	public List<String> getAuthoritiesAsStringList() {
 		List<String> authorities = new ArrayList<>();
 		if (isAdmin())
-			authorities.add("ADMIN_ACTING"); // 관리자 행동을 할 권한
+			authorities.add("ROLE_ADMIN"); // 관리자 행동을 할 권한
 		return authorities;
 	}
 }
