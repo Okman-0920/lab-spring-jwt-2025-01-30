@@ -117,5 +117,29 @@ public class AuthTokenServiceTest {
 					"username", memberUser1.getUsername()
 				)
 			);
+
+		System.out.println("memberUser1 accessToKen = " + accessToken);
+	}
+	@Test
+	@DisplayName("authTokenService.getAccessToken(memberAdmin);")
+	void t5() {
+		Member memberAdmin = memberService.findByUsername("admin").get();
+
+		String accessToken = memberService.genAccessToken(memberAdmin);
+
+		assertThat(accessToken).isNotBlank();
+
+		assertThat(Ut.jwt.isValid(jwtSecretKey, accessToken)).isTrue();
+
+		Map<String, Object> parsedPayload = memberService.payload(accessToken);
+		assertThat(parsedPayload)
+			.containsAllEntriesOf(
+				Map.of(
+					"id", memberAdmin.getId(),
+					"username", memberAdmin.getUsername()
+				)
+			);
+
+		System.out.println("memberAdmin accessToken= " + accessToken);
 	}
 }
