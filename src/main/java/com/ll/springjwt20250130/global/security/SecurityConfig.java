@@ -28,6 +28,8 @@ public class SecurityConfig {
 					.permitAll()
 					.requestMatchers("/api/*/members/login", "/api/*/members/join")
 					.permitAll()
+					.requestMatchers("/api/*/posts/statistics")
+					.hasAuthority("ADMIN_ACTING")
 					// Matcher 된 get 매서드는 승인한다
 					.anyRequest()
 					// 그 외에 나머지 요청은
