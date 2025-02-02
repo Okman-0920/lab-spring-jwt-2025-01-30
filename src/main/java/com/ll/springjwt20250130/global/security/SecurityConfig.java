@@ -29,7 +29,8 @@ public class SecurityConfig {
 					.requestMatchers("/api/*/members/login", "/api/*/members/join")
 					.permitAll()
 					.requestMatchers("/api/*/posts/statistics")
-					.hasAuthority("ROLE_ADMIN")
+					// .hasAuthority("ROLE_ADMIN")
+					.hasRole("ADMIN") // 이렇게하고 ROLE_ 지워야 함
 					// Matcher 된 get 매서드는 승인한다
 					.anyRequest()
 					// 그 외에 나머지 요청은
