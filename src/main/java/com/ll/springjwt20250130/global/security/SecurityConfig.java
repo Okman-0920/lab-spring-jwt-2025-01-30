@@ -49,34 +49,33 @@ public class SecurityConfig {
 			.addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling(
 				exceptionHandling -> exceptionHandling
+					// 인증 관련 문제 발생 시 실행
 					.authenticationEntryPoint(
 						(request, response, authException) -> {
 							response.setContentType("application/json;charset=UTF-8");
 
-							// 401체크 체크
-							boolean is401 = authException.getLocalizedMessage().contains("authentication is required");
-
-							if (is401) {
-								response.setStatus(401);
-								response.getWriter().write(
-									Ut.json.toString(
-										new RsData("401-1", "사용자 인증정보가 올바르지 않습니다.")
-									)
-								);
-								return;
-							}
+							response.setStatus(401);
+							response.getWriter().write(
+								Ut.json.toString(
+									new RsData("401-1", "사용자 인증정보가 올바르지 않습니다.")
+								)
+							);
+						}
+					)
+					// 권한 관련 문제 발생 시 실행
+					.accessDeniedHandler(
+						(request, response, accessDeniedException) -> {
+							response.setContentType("application/json;charset=UTF-8");
 
 							response.setStatus(403);
 							response.getWriter().write(
 								Ut.json.toString(
-									new RsData("403-1", request.getRequestURI() + ", " + authException.getLocalizedMessage())
+									new RsData("403-1", "접근 권한이 없습니다.")
 								)
 							);
 						}
 					)
 			);
-		;
-
 
 		return http.build();
 	}
