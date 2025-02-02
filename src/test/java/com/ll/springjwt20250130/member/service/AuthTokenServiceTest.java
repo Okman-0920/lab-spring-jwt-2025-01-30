@@ -120,6 +120,7 @@ public class AuthTokenServiceTest {
 
 		System.out.println("memberUser1 accessToKen = " + accessToken);
 	}
+
 	@Test
 	@DisplayName("authTokenService.getAccessToken(memberAdmin);")
 	void t5() {
