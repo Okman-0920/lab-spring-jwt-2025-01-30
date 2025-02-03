@@ -36,7 +36,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
 		String authorization = request.getHeader("Authorization");
 
-		// Authorization 헤더가 없거나 Bearer 로 시작하지 않는다면 패스
+		// Authorization 헤더에서 값을 가져오는 것
 		if (authorization != null && authorization.startsWith("Bearer ")) {
 			String token = authorization.substring("Bearer ".length());
 			String[] tokenBits = token.split(" ", 2);
@@ -46,6 +46,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 				accessToken = tokenBits[1];
 			}
 		}
+
 
 		if (apiKey == null || accessToken == null) {
 			apiKey = rq.getCookieValue("apiKey");
@@ -72,6 +73,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			String newAccessToken = memberService.genAccessToken(member);
 
 			response.setHeader("Authorization", "Bearer " + apiKey + " " + newAccessToken);
+			rq.setCookie("accessToken", newAccessToken);
 		}
 
 		rq.setLogin(member);
