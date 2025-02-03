@@ -13,6 +13,7 @@ import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.MemberService;
 import com.ll.springjwt20250130.global.security.SecurityUser;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 // 이 Class는 Request/ response 를 추상화한 객체
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class Rq {
+    private final HttpServletResponse resp;
     private final MemberService memberService;
 
     // 스프링 시큐리티가 이해하는 방식으로 강제 로그인 처리

@@ -5,6 +5,9 @@ spring:
     name: springjwt20250130
   profiles:
     active: dev
+  web:
+    resources:
+      add-mappings: false
   output:
     ansi:
       enabled: always

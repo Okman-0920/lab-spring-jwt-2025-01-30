@@ -56,7 +56,7 @@ public class MemberService {
 	}
 
     public String getAuthToken(Member member) {
-        return genAccessToken(member);
+        return member.getApiKey() + " " + genAccessToken(member);
     }
 
     public Map<String, Object> payload(String accessToken) {

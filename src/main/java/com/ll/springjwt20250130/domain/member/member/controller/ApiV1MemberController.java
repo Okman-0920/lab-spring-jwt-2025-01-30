@@ -2,6 +2,7 @@ package com.ll.springjwt20250130.domain.member.member.controller;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import com.ll.springjwt20250130.global.exceptions.ServiceException;
 import com.ll.springjwt20250130.global.rq.Rq;
 import com.ll.springjwt20250130.global.rsData.RsData;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +68,8 @@ public class ApiV1MemberController {
     @PostMapping("/login")
     @Transactional
     public RsData<MemberLoginResBody> login(
-        @RequestBody @Valid MemberLoginReqBody reqBody
+        @RequestBody @Valid MemberLoginReqBody reqBody,
+        HttpServletResponse resp
     ) {
         Member member = memberService
             .findByUsername(reqBody.username)
@@ -77,6 +80,30 @@ public class ApiV1MemberController {
             throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
 
         String accessToken = memberService.genAccessToken(member);
+
+        resp.addHeader(
+            "set-CooKie",
+            ResponseCookie.from("apiKey", member.getApiKey())
+                .path("/")
+                .domain("localhost")
+                .sameSite("Strict")
+                .secure(true)
+                .httpOnly(true)
+                .build()
+                .toString()
+        );
+
+        resp.addHeader(
+            "set-CooKie",
+            ResponseCookie.from("accessToken", accessToken)
+                .path("/")
+                .domain("localhost")
+                .sameSite("Strict")
+                .secure(true)
+                .httpOnly(true)
+                .build()
+                .toString()
+        );
 
         return new RsData<>(
             "200-1",
