@@ -31,24 +31,31 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		String apiKey = null;
+		String accessToken = null;
+
 		String authorization = request.getHeader("Authorization");
 
 		// Authorization 헤더가 없거나 Bearer 로 시작하지 않는다면 패스
-		if (authorization == null || !authorization.startsWith("Bearer ")) {
+		if (authorization != null && authorization.startsWith("Bearer ")) {
+			String token = authorization.substring("Bearer ".length());
+			String[] tokenBits = token.split(" ", 2);
+
+			if (tokenBits.length == 2) {
+				apiKey = tokenBits[0];
+				accessToken = tokenBits[1];
+			}
+		}
+
+		if (apiKey == null || accessToken == null) {
+			apiKey = rq.getCookieValue("apiKey");
+			accessToken = rq.getCookieValue("accessToken");
+		}
+
+		if (apiKey == null || accessToken == null) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-
-		String token = authorization.substring("Bearer ".length());
-		String[] tokenBits = token.split(" ", 2);
-
-		if (tokenBits.length != 2) {
-			filterChain.doFilter(request, response);
-			return;
-		}
-
-		String apiKey = tokenBits[0];
-		String accessToken = tokenBits[1];
 
 		Member member = memberService.getMemberFromAccessToken(accessToken);
 

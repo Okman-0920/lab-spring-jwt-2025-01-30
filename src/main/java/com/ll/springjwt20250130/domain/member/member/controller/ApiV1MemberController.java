@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ll.springjwt20250130.domain.controller.BaseController;
 import com.ll.springjwt20250130.domain.member.member.dto.MemberDto;
 import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.AuthTokenService;
@@ -18,7 +17,6 @@ import com.ll.springjwt20250130.global.exceptions.ServiceException;
 import com.ll.springjwt20250130.global.rq.Rq;
 import com.ll.springjwt20250130.global.rsData.RsData;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-public class ApiV1MemberController extends BaseController {
+public class ApiV1MemberController {
     private final MemberService memberService;
     private final Rq rq;
     private final AuthTokenService authTokenService;
@@ -68,8 +66,7 @@ public class ApiV1MemberController extends BaseController {
     @PostMapping("/login")
     @Transactional
     public RsData<MemberLoginResBody> login(
-        @RequestBody @Valid MemberLoginReqBody reqBody,
-        HttpServletResponse resp
+        @RequestBody @Valid MemberLoginReqBody reqBody
     ) {
         Member member = memberService
             .findByUsername(reqBody.username)
@@ -81,8 +78,9 @@ public class ApiV1MemberController extends BaseController {
 
         String accessToken = memberService.genAccessToken(member);
 
-        setCookie(resp, "accessToken", accessToken);
-        setCookie(resp, "apiKey", member.getApiKey());
+        rq.setCookie("accessToken", accessToken);
+        rq.setCookie("apiKey", member.getApiKey());
+
 
         return new RsData<>(
             "200-1",

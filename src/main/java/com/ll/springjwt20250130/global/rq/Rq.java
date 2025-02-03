@@ -1,7 +1,9 @@
 package com.ll.springjwt20250130.global.rq;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +15,7 @@ import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.MemberService;
 import com.ll.springjwt20250130.global.security.SecurityUser;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class Rq {
+    private final HttpServletRequest req;
     private final HttpServletResponse resp;
     private final MemberService memberService;
 
@@ -54,6 +58,28 @@ public class Rq {
             .map(principal -> (UserDetails) principal)
             .map(UserDetails::getUsername)
             .flatMap(memberService::findByUsername)
+            .orElse(null);
+    }
+
+    public void setCookie(String name, String value) {
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+            .path("/")
+            .domain("localhost")
+            .sameSite("Strict")
+            .secure(true)
+            .httpOnly(true)
+            .build();
+        resp.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public String getCookieValue(String name) {
+        return Optional
+            .ofNullable(req.getCookies())
+            .stream() // 1 ~ 0
+            .flatMap(cookies -> Arrays.stream(cookies))
+            .filter(cookie -> cookie.getName().equals(name))
+            .map(cookie -> cookie.getValue())
+            .findFirst()
             .orElse(null);
     }
 }
