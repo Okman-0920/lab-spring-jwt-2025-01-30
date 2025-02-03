@@ -2,7 +2,6 @@ package com.ll.springjwt20250130.domain.member.member.controller;
 
 import java.util.UUID;
 
-import org.springframework.http.ResponseCookie;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ll.springjwt20250130.domain.controller.BaseController;
 import com.ll.springjwt20250130.domain.member.member.dto.MemberDto;
 import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.AuthTokenService;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-public class ApiV1MemberController {
+public class ApiV1MemberController extends BaseController {
     private final MemberService memberService;
     private final Rq rq;
     private final AuthTokenService authTokenService;
@@ -81,29 +81,8 @@ public class ApiV1MemberController {
 
         String accessToken = memberService.genAccessToken(member);
 
-        resp.addHeader(
-            "set-CooKie",
-            ResponseCookie.from("apiKey", member.getApiKey())
-                .path("/")
-                .domain("localhost")
-                .sameSite("Strict")
-                .secure(true)
-                .httpOnly(true)
-                .build()
-                .toString()
-        );
-
-        resp.addHeader(
-            "set-CooKie",
-            ResponseCookie.from("accessToken", accessToken)
-                .path("/")
-                .domain("localhost")
-                .sameSite("Strict")
-                .secure(true)
-                .httpOnly(true)
-                .build()
-                .toString()
-        );
+        setCookie(resp, "accessToken", accessToken);
+        setCookie(resp, "apiKey", member.getApiKey());
 
         return new RsData<>(
             "200-1",
