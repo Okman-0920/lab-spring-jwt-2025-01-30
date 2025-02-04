@@ -1,8 +1,11 @@
 package com.ll.springjwt20250130.global.rq;
 
-import java.util.Arrays;
-import java.util.Optional;
-
+import com.ll.springjwt20250130.domain.member.member.entity.Member;
+import com.ll.springjwt20250130.domain.member.member.service.MemberService;
+import com.ll.springjwt20250130.global.security.SecurityUser;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,13 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import com.ll.springjwt20250130.domain.member.member.entity.Member;
-import com.ll.springjwt20250130.domain.member.member.service.MemberService;
-import com.ll.springjwt20250130.global.security.SecurityUser;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
+import java.util.Optional;
 
 // 이 Class는 Request/ response 를 추상화한 객체
 // Request, Response, Cookie, Session 등을 다룬다
@@ -81,5 +79,13 @@ public class Rq {
             .map(cookie -> cookie.getValue())
             .findFirst()
             .orElse(null);
+    }
+
+    public void setHeader(String name, String value) {
+        resp.setHeader(name, value);
+    }
+
+    public String getHeader(String name) {
+        return req.getHeader(name);
     }
 }
