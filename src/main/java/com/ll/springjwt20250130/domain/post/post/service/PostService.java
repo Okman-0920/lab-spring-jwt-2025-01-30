@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.post.post.entity.Post;
 import com.ll.springjwt20250130.domain.post.post.repository.PostRepository;
-import com.ll.springjwt20250130.global.standard.util.Ut;
+import com.ll.springjwt20250130.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
 

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ll.springjwt20250130.domain.member.member.entity.Member;
 import com.ll.springjwt20250130.domain.member.member.service.AuthTokenService;
 import com.ll.springjwt20250130.domain.member.member.service.MemberService;
-import com.ll.springjwt20250130.global.standard.util.Ut;
+import com.ll.springjwt20250130.standard.util.Ut;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

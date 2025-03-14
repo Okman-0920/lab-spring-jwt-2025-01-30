@@ -1,4 +1,4 @@
-package com.ll.springjwt20250130.global.standard.page.dto;
+package com.ll.springjwt20250130.standard.page.dto;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;

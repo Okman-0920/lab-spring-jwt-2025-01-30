@@ -8,7 +8,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.ll.springjwt20250130.global.rsData.RsData;
-import com.ll.springjwt20250130.global.standard.util.Ut;
+import com.ll.springjwt20250130.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ public class SecurityConfig {
 					.permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/*/posts/{id:\\d+}", "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments")
 					.permitAll()
-					.requestMatchers("/api/*/members/login", "/api/*/members/join")
+					.requestMatchers("/api/*/members/login", "/api/*/members/join", "/api/*/members/logout")
 					.permitAll()
 					.requestMatchers("/api/*/posts/statistics")
 					// .hasAuthority("ROLE_ADMIN")

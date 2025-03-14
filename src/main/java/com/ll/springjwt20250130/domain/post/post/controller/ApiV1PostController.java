@@ -20,7 +20,7 @@ import com.ll.springjwt20250130.domain.post.post.service.PostService;
 import com.ll.springjwt20250130.global.exceptions.ServiceException;
 import com.ll.springjwt20250130.global.rq.Rq;
 import com.ll.springjwt20250130.global.rsData.RsData;
-import com.ll.springjwt20250130.global.standard.page.dto.PageDto;
+import com.ll.springjwt20250130.standard.page.dto.PageDto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

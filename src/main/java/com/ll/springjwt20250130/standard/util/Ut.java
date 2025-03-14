@@ -1,4 +1,4 @@
-package com.ll.springjwt20250130.global.standard.util;
+package com.ll.springjwt20250130.standard.util;
 
 import java.security.Key;
 import java.util.Date;

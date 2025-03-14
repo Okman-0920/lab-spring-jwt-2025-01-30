@@ -3,6 +3,7 @@ package com.ll.springjwt20250130.domain.member.member.controller;
 import java.util.UUID;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,7 +79,7 @@ public class ApiV1MemberController {
 
         String accessToken = memberService.genAccessToken(member);
 
-        rq.setCookie("accessToken", accessToken);
+        rq.setHeader("accessToken", accessToken);
         rq.setCookie("apiKey", member.getApiKey());
 
 
@@ -100,6 +101,19 @@ public class ApiV1MemberController {
 
         return new MemberDto(member);
     }
+
+    @DeleteMapping("/logout")
+    @Transactional(readOnly = true)
+    public RsData<Void> logout() {
+        rq.deleteCookie("accessToken");
+        rq.deleteCookie("apiKey");
+
+        return new RsData<>(
+            "200-1",
+            "로그아웃 되었습니다"
+        );
+    }
+
 
     // 테스트용 임시 함수
     @GetMapping("/userKey1")
